@@ -4,9 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.julex</groupId>
+    <groupId>com.julex</groupId>
     <artifactId>myBlog</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>blog-service</module>
+        <module>blog-client</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -22,7 +26,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Greenwich.SR3</version>
+                <version>Hoxton.SR11</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
