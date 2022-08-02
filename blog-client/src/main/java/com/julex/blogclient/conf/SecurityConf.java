@@ -44,7 +44,7 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
         /**
          * form表单验证
          */
-        http.authorizeRequests().antMatchers("/**").fullyAuthenticated().and().formLogin();
+//        http.authorizeRequests().antMatchers("/**").fullyAuthenticated().and().formLogin();
         /**
          * 拦截规则
          */
@@ -54,9 +54,25 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/del").hasAnyAuthority("del")
 //                //form验证
 //                .antMatchers("/**").fullyAuthenticated().and().formLogin();
+        /**
+         * 自定义登录页
+         */
+        http
+                //禁用csrf
+                .csrf()
+                .disable()
 
+                //用户登录
+                .formLogin()
+                .loginPage("/login.html")
+                .loginProcessingUrl("/login")//自定义登录请求路径
+
+                //请求过滤
+                .and()
+                .authorizeRequests()
+                .antMatchers("/login.html", "/login").anonymous()//登录页与登录请求，只允许匿名访问
+                .anyRequest().authenticated();//除此之外，其他请求均需要登录后才可以访问
     }
-
     /**
      * 加密方式，恢复以前模式
      * @return
