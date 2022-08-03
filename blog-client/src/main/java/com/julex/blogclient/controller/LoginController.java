@@ -7,12 +7,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping(value = "login")
 public class LoginController {
 
     @GetMapping(value = "id/{id}")
     @ResponseBody
     public String login(@PathVariable("id") String userId){
         return userId;
+    }
+
+    @RequestMapping(value = "myLogin")
+    public String login(){
+        return "login";
     }
 }
