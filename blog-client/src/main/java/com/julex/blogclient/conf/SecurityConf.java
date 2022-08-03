@@ -1,5 +1,8 @@
 package com.julex.blogclient.conf;
 
+import com.julex.blogclient.handler.MyAuthenticationFailureHandler;
+import com.julex.blogclient.handler.MyAuthenticationSucessHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -14,6 +17,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 @Configuration
 @EnableWebSecurity
 public class SecurityConf extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private MyAuthenticationSucessHandler authenticationSucessHandler;
+
+    @Autowired
+    private MyAuthenticationFailureHandler authenticationFailureHandler;
     /**
      * 新增Security
      * 授权账户
@@ -37,36 +46,47 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
      * @param http
      * @throws Exception
      */
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        /**
-//         * 基础认证
-//         */
-//        //http.authorizeRequests().antMatchers("/**").fullyAuthenticated().and().httpBasic();
-//        /**
-//         * form表单验证
-//         */
-////        http.authorizeRequests().antMatchers("/**").fullyAuthenticated().and().formLogin();
-//        /**
-//         * 拦截规则
-//         */
-////        http.authorizeRequests().antMatchers("/add").hasAnyAuthority("add")
-////                .antMatchers("/get").hasAnyAuthority("get")
-////                .antMatchers("/update").hasAnyAuthority("update")
-////                .antMatchers("/del").hasAnyAuthority("del")
-////                //form验证
-////                .antMatchers("/**").fullyAuthenticated().and().formLogin();
-//        /**
-//         * 自定义登录页
-//         */
-////        http.csrf().disable().formLogin().loginPage("/myLogin").loginProcessingUrl("/myLogin");//自定义登录请求路径
-//
-//    }
-
     @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("css/**");
+    protected void configure(HttpSecurity http) throws Exception {
+        /**
+         * 基础认证
+         */
+        //http.authorizeRequests().antMatchers("/**").fullyAuthenticated().and().httpBasic();
+        /**
+         * form表单验证
+         */
+//        http.authorizeRequests().antMatchers("/**").fullyAuthenticated().and().formLogin();
+        /**
+         * 拦截规则
+         */
+//        http.authorizeRequests().antMatchers("/add").hasAnyAuthority("add")
+//                .antMatchers("/get").hasAnyAuthority("get")
+//                .antMatchers("/update").hasAnyAuthority("update")
+//                .antMatchers("/del").hasAnyAuthority("del")
+//                //form验证
+//                .antMatchers("/**").fullyAuthenticated().and().formLogin();
+        /**
+         * 自定义登录页
+         */
+//        http.csrf().disable().formLogin().loginPage("/myLogin").loginProcessingUrl("/myLogin");//自定义登录请求路径
+        http.formLogin() // 表单登录
+                // http.httpBasic() // HTTP Basic
+//                .loginPage("/authentication/require") // 登录跳转 URL
+                .loginPage("/myLogin") // 登录跳转 URL
+                .loginProcessingUrl("/login") // 处理表单登录 URL
+                .successHandler(authenticationSucessHandler).failureHandler(authenticationFailureHandler)
+                .and()
+                .authorizeRequests() // 授权配置
+                .antMatchers( "/myLogin","/css/**").permitAll() // 登录跳转 URL 无需认证
+                .anyRequest()  // 所有请求
+                .authenticated() // 都需要认证
+                .and().csrf().disable();
     }
+
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+//        web.ignoring().antMatchers("css/**");
+//    }
     /**
      * 加密方式，恢复以前模式
      * @return
